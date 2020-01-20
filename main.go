@@ -18,6 +18,10 @@ import (
 
 var s minediveServer
 
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
+}
+
 func printMemUsage() {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
