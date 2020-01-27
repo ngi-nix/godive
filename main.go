@@ -5,6 +5,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -73,6 +74,11 @@ func minediveDispatch(cli *minediveClient, jmsg []byte) {
 			cli.Name = umsg.Name
 			b64pk, _ := b64.StdEncoding.DecodeString(umsg.PK)
 			copy(cli.PublicKey[:], b64pk[:32])
+		case "ping":
+			var datamsg dataMsg
+			err = json.Unmarshal(jmsg, &datamsg)
+			datamsg.Type = "pong"
+			websocket.JSON.Send(cli.ws, datamsg)
 		case "message":
 			log.Println("message not used")
 		case "getkey":
@@ -90,16 +96,18 @@ func minediveDispatch(cli *minediveClient, jmsg []byte) {
 			var rtcmsg webrtcMsg
 			err = json.Unmarshal(jmsg, &rtcmsg)
 			if err != nil {
-				log.Panic(err.Error())
+				log.Println(err.Error())
+			} else {
+				s.fwdToTarget(&rtcmsg)
 			}
-			s.fwdToTarget(&rtcmsg)
 		case "answer":
 			var rtcmsg webrtcMsg
 			err = json.Unmarshal(jmsg, &rtcmsg)
 			if err != nil {
-				log.Panic(err.Error())
+				log.Println(err.Error())
+			} else {
+				s.fwdToTarget(&rtcmsg)
 			}
-			s.fwdToTarget(&rtcmsg)
 		default:
 			log.Println(imsg.Type)
 		}
@@ -126,10 +134,19 @@ func minediveAccept(ws *websocket.Conn) {
 	s.clientsMutex.Unlock()
 	for {
 		var jmsg []byte
-		websocket.Message.Receive(ws, &jmsg)
+		err := websocket.Message.Receive(ws, &jmsg)
+		if err != nil {
+			log.Println(err)
+			s.deleteClientByName(cli.Name)
+			cli.ws.Close()
+			s.dumpClients()
+			log.Println(cli.Name, "disconnected")
+			return
+		}
 		if jmsg != nil {
 			minediveDispatch(&cli, jmsg)
 		} else {
+			log.Println("TIMEOUT")
 			time.Sleep(300 * time.Millisecond)
 		}
 
@@ -148,6 +165,7 @@ func checkOrigin(config *websocket.Config, req *http.Request) (err error) {
 }
 
 func main() {
+	certDir := flag.String("d", "", "Certificate and Key directory")
 	s.initMinediveServer()
 	hs := &http.Server{
 		ReadTimeout:       10 * time.Second,
@@ -156,7 +174,12 @@ func main() {
 		Addr:              ":6501",
 		Handler:           websocket.Handler(minediveAccept),
 	}
-	err := hs.ListenAndServe()
+	var err error
+	if *certDir == "" {
+		err = hs.ListenAndServe()
+	} else {
+		err = hs.ListenAndServeTLS(*certDir+"cert.pem", *certDir+"privkey.pem")
+	}
 	if err != nil {
 		panic("ListenAndServeTLS: " + err.Error())
 	}

@@ -5,6 +5,11 @@ type p1Users struct {
 	Alias string `json:"alias"`
 }
 
+type dataMsg struct {
+	Type string `json:"type"`
+	Data string `json:"data"`
+}
+
 type userlistMsg struct {
 	Type    string    `json:"type"`
 	Contact int       `json:"contact"`

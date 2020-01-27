@@ -23,6 +23,24 @@ func (s *minediveServer) initMinediveServer() {
 	s.idMutex = &sync.Mutex{}
 }
 
+func (s *minediveServer) deleteClientByName(name string) error {
+	var c *minediveClient
+	s.clientsMutex.Lock()
+	len := len(s.clients)
+	for n := range s.clients {
+		c = s.clients[n]
+		if c.Name == name {
+			s.clients[n] = s.clients[len-1]
+			s.clients[len-1] = nil
+			s.clients = s.clients[:len-1]
+			s.clientsMutex.Unlock()
+			return nil
+		}
+	}
+	s.clientsMutex.Unlock()
+	return errors.New("Client not found")
+}
+
 func (s *minediveServer) getClientByName(name string) (*minediveClient, error) {
 	var c *minediveClient
 	s.clientsMutex.Lock()
