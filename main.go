@@ -166,21 +166,26 @@ func checkOrigin(config *websocket.Config, req *http.Request) (err error) {
 
 func main() {
 	certDir := flag.String("d", "", "Certificate and Key directory")
+	plainHTTP := flag.Bool("plain-http", false, "Explic fallback on plain HTTP")
+	port := flag.Int("port", 6501, "Listen port")
+	flag.Parse()
+
 	s.initMinediveServer()
+	portString := fmt.Sprintf(":%d", *port)
 	hs := &http.Server{
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,
 		ReadHeaderTimeout: 20 * time.Second,
-		Addr:              ":6501",
+		Addr:              portString,
 		Handler:           websocket.Handler(minediveAccept),
 	}
 	var err error
-	if *certDir == "" {
+	if *plainHTTP == true {
 		err = hs.ListenAndServe()
 	} else {
 		err = hs.ListenAndServeTLS(*certDir+"cert.pem", *certDir+"privkey.pem")
 	}
 	if err != nil {
-		panic("ListenAndServeTLS: " + err.Error())
+		panic("ListenAndServe: " + err.Error())
 	}
 }
