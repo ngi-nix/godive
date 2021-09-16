@@ -1,0 +1,47 @@
+["golang.org/x/crypto"]
+  sumVersion = "v0.0.0-20210915214749-c084706c2272"
+  ["golang.org/x/crypto".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/crypto"
+    rev = "c084706c2272f3d44b722e988e70d4a58e60e7f4"
+    sha256 = "1m5aiycf2yxn5xpap7c84nhkw44wzj4bpwjw4hvar5x89zlb0yh3"
+
+["golang.org/x/net"]
+  sumVersion = "v0.0.0-20210916014120-12bc252f5db8"
+  ["golang.org/x/net".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/net"
+    rev = "12bc252f5db8613b006bfd531330e1f256da625c"
+    sha256 = "1k6paalh6lk78hwdzkwnwcgm7hirvns4kvkldlrqmiqalh8g6c6l"
+
+["golang.org/x/sys"]
+  sumVersion = "v0.0.0-20210615035016-665e8c7367d1"
+  ["golang.org/x/sys".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/sys"
+    rev = "665e8c7367d1ecf644cea2d163019ef59c13d554"
+    sha256 = "11n848csibdbv7b46zjyf4l7sphg37n9sjzqfy1ds7p1jyakwmnv"
+
+["golang.org/x/term"]
+  sumVersion = "v0.0.0-20201126162022-7de9c90e9dd1"
+  ["golang.org/x/term".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/term"
+    rev = "7de9c90e9dd184706b838f536a1cbf40a296ddb7"
+    sha256 = "1ba252xmv6qsvf1w1gcy98mngrj0vd4inbjw0lsklqvva65nljna"
+
+["golang.org/x/text"]
+  sumVersion = "v0.3.6"
+  ["golang.org/x/text".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/text"
+    rev = "e328d63cff14134669501e0e154e4f141c784322"
+    sha256 = "0wzhvdb059vrp2cczqw422ajrb9sbs4l3qd020hlngj33qfhxah0"
+
+["golang.org/x/tools"]
+  sumVersion = "v0.0.0-20180917221912-90fa682c2a6e"
+  ["golang.org/x/tools".fetch]
+    type = "git"
+    url = "https://go.googlesource.com/tools"
+    rev = "90fa682c2a6e6a37b3a1364ce2fe1d5e41af9d6d"
+    sha256 = "03ic2xsy51jw9749wl7gszdbz99iijbd2bckgygl6cm9w5m364ak"
